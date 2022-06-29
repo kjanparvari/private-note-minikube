@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Private Note</title>
+    <style>
+        .main__container {
+            display: flex;
+            justify-content: center;
+            width: 800px;
+            margin: 0 auto;
+            background-color: #404040;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .ready__header {
+            color: whitesmoke;
+            margin-bottom: 2%;
+            font-weight: bolder;
+            font-size: 36px;
+            font-family: Helvetica, serif;
+        }
+
+        .ready-section {
+            display: flex;
+            flex-direction: column;
+            /*background-color: gold;*/
+            width: 80%;
+        }
+
+        .buttons__container {
+            display: flex;
+            flex-direction: row;
+            margin: auto;
+            width: 100%;
+        }
+
+        .show-button {
+            /*padding: 5px 100px;*/
+            width: 300px;
+            border-radius: 5px;
+            background-color: #007E33;
+            color: whitesmoke;
+            border: none;
+            font-size: 24px;
+            margin: 2% auto;
+        }
+
+        .show-button:hover {
+            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+        }
+
+        .show-button:active {
+            background-color: #007E33;
+            box-shadow: 0 0 #666;
+            transform: translateY(4px);
+        }
+
+        .dont-show-button {
+            /*padding: 5px 100px;*/
+            width: 300px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: #CC0000;
+            color: whitesmoke;
+            border: none;
+            font-size: 24px;
+            margin: 2% auto;
+        }
+
+        .dont-show-button:hover {
+            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+        }
+
+        .dont-show-button:active {
+            background-color: #CC0000;
+            box-shadow: 0 0 #666;
+            transform: translateY(4px);
+        }
+
+        .note-section {
+            color: whitesmoke;
+            font-size: 20px;
+            font-family: Helvetica, serif;
+        }
+    </style>
+</head>
+<body style="font-family:  Helvetica, sans-serif">
+<div id="main__container" class="main__container">
+    <div id="ready-section" class="ready-section">
+        <h2 class="ready__header">
+            Read and destroy?
+        </h2>
+        <div style="color: whitesmoke">
+            You are about to read and destroy the note with id: {{note_id}}.
+        </div>
+
+        <div class="buttons__container">
+            <button id="show-btn" class="show-button">
+                Yes, show me the note.
+            </button>
+            <button id="dont-show-btn" class="dont-show-button">
+                No, not now.
+            </button>
+        </div>
+
+    </div>
+    <script>
+        async function getData(url = '') {
+            const response = await fetch(url, {
+                method: 'GET',
+                // mode: 'no-cors', // no-cors, *cors, same-origin
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                    // "Access-Control-Allow-Credentials": true
+                }
+            });
+            return response.json()
+        }
+
+        document.getElementById("show-btn").onclick = function () {
+            const noteId = "{{note_id}}";
+            const url = "{{server_address}}:{{server_port}}/note?note_id=$note_id".replace("$note_id", noteId);
+            console.log(url)
+            getData(url).then((data) => {
+                document.getElementById("main__container").innerHTML = '<div class="note-section"> $note </div>'.replace("$note", data["note"])
+            })
+        };
+        document.getElementById("dont-show-btn").onclick = function () {
+            console.log("not")
+            window.close()
+        };
+    </script>
+</div>
+</body>
+</html>

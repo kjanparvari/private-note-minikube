@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Private Note</title>
+    <style>
+        .new-note__container {
+            display: flex;
+            justify-content: center;
+            width: 800px;
+            margin: 0 auto;
+            background-color: #404040;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .new-note__label {
+            color: whitesmoke;
+            margin-bottom: 2%;
+            font-weight: bolder;
+            font-size: 36px;
+            font-family: Helvetica, serif;
+        }
+
+        .new-note__textarea {
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .new-note__button {
+            padding: 5px 100px;
+            border-radius: 5px;
+            background-color: #007E33;
+            color: whitesmoke;
+            border: none;
+            font-size: 28px;
+            margin: 2% auto;
+        }
+
+        .new-note__button:hover {
+            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+        }
+
+        .new-note__button:active {
+            background-color: #007E33;
+            box-shadow: 0 0 #666;
+            transform: translateY(4px);
+        }
+
+        .url-section {
+            color: whitesmoke;
+            font-size: 28px;
+            font-family: Helvetica, serif;
+        }
+    </style>
+</head>
+<body>
+<div id="new-note__container" class="new-note__container">
+    <div id="add_section" style="display: flex; flex-direction: column;">
+        <label for="new-note" class="new-note__label">New
+            Note
+        </label>
+        <textarea id="new-note" name="new-note" rows="10" cols="80" class="new-note__textarea"></textarea>
+        <button id="send-btn" class="new-note__button">
+            send
+        </button>
+    </div>
+    <script>
+        async function postData(url = '', data = {}) {
+            const response = await fetch(url, {
+                method: 'POST',
+                // mode: 'no-cors', // no-cors, *cors, same-origin
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                    // "Access-Control-Allow-Credentials": true
+                }, body: JSON.stringify(data)
+            });
+            return response.json()
+        }
+
+        document.getElementById("send-btn").onclick = function () {
+            const text = document.getElementById("new-note").value;
+            const url = "{{server_address}}:{{server_port}}/add";
+            postData(url, {text: text}).then((data) => {
+                document.getElementById("new-note__container").innerHTML = '<a href=$url class="url-section"> $url </a>'.replaceAll("$url", data["url"])
+            })
+        };
+    </script>
+</div>
+</body>
+</html>
