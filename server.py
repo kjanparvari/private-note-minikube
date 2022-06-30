@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import json
 import os
-import psycopg2
+import redis
+import hashlib
+import logging
 
 app = Flask(__name__, template_folder='./')
 CORS(app)
@@ -12,10 +14,9 @@ server_address = os.environ.get('CC_SERVER_ADDRESS', "http://127.0.0.1")
 database_address = os.environ.get('CC_DB_ADDRESS', "postgres://ccapp@postgres/ccdb")
 database_name = os.environ.get('CC_DB_NAME', "ccdb")
 database_user = os.environ.get('CC_DB_USER', "ccapp")
-database_password = os.environ.get('CC_DB_PASS', "")
-expiration_time = int(os.environ.get('CC_EXPIRATION', 2))
-
-txt = "orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+database_password = os.environ.get('CC_DB_PASS', "password")
+database_port = int(os.environ.get('CC_DB_PORT', "6379"))
+expiration_time = int(os.environ.get('CC_EXPIRATION', 10))
 
 
 @app.route("/")
@@ -25,8 +26,12 @@ def get_main_page():
 
 @app.route("/add", methods=['POST'])
 def add_note():
-    print(json.loads(request.data))
-    response = jsonify({'url': f'{server_address}:{server_port}/show?note_id={"U4JF9H31F"}'})
+    text = json.loads(request.data)["text"]
+    key = hashlib.sha256(text.encode('utf-8')).hexdigest()[:10]
+    r = connect_db()
+    r.set(key, text, ex=expiration_time)
+    r.close()
+    response = jsonify({'url': f'{server_address}:{server_port}/show?note_id={key}'})
     return response
 
 
@@ -34,19 +39,22 @@ def add_note():
 def get_note_page():
     note_id = request.args['note_id']
     print(note_id)
-    return render_template("index2.html", note_id="note_id", server_port=server_port, server_address=server_address)
+    return render_template("index2.html", note_id=note_id, server_port=server_port, server_address=server_address)
 
 
 @app.route("/note", methods=['GET'])
 def get_note():
     note_id = request.args['note_id']
-    print(note_id)
-    response = jsonify({'note': f"this is requested note for {note_id}.\n{txt}"})
+    r = connect_db()
+    txt = r.get(note_id)
+    # r.delete(note_id)
+    r.close()
+    if txt is None:
+        txt = "Note Does Not Exist!"
+    else:
+        txt = txt.decode('UTF-8')
+    response = jsonify({'note': txt})
     return response
-
-
-def setup_db():
-    pass
 
 
 def connect_db():
@@ -54,31 +62,16 @@ def connect_db():
     _conn = None
     try:
         # connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL database...')
-        _conn = psycopg2.connect(
+        print('Connecting to the Redis database...')
+        _r = redis.Redis(
             host=database_address,
-            database=database_name,
-            user=database_user,
+            port=database_port,
             password=database_password)
-
-        # create a cursor
-        _cur = _conn.cursor()
-
-        # execute a statement
-        print('PostgreSQL database version:')
-        _cur.execute('SELECT version()')
-
-        # display the PostgreSQL database server version
-        db_version = _cur.fetchone()
-        print(db_version)
-
-        # close the communication with the PostgreSQL
-        # _cur.close()
-        return _conn, _cur
-    except (Exception, psycopg2.DatabaseError) as error:
+        return _r
+    except (Exception, redis.RedisError) as error:
         print(error)
 
 
 if __name__ == '__main__':
-    con, cur = connect_db()
+    connect_db()
     app.run(debug=True, host='0.0.0.0', port=server_port)
