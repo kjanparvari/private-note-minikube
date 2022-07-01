@@ -47,12 +47,12 @@ def get_note():
     note_id = request.args['note_id']
     r = connect_db()
     txt = r.get(note_id)
-    r.delete(note_id)
-    r.close()
     if txt is None:
         txt = "Note Does Not Exist!"
     else:
+        r.delete(note_id)
         txt = txt.decode('UTF-8')
+    r.close()
     response = jsonify({'note': txt})
     return response
 

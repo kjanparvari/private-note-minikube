@@ -1,0 +1,22 @@
+docker build in pycharm:
+	docker build -t kjanparvari/pn:1.0 -f Dockerfile .
+
+docker run in terminal:
+	docker run -p 5000:5000 -i kjanparvari/pn:1.0
+=
+docker-compose in pycharm:
+	docker-compose up --build
+	docker-compose down
+
+short forms:
+	k api-resources
+
+k apply -f config-map.yml
+k apply -f my-secret.yml
+k apply -f my-pv.yml
+k apply -f my-pvc.yml
+k apply -f db-deploy.yml
+k apply -f db-service.yml
+k apply -f pn-deploy.yml
+k apply -f pn-service.yml
+k port-forward service/pn-service 5000:5000
