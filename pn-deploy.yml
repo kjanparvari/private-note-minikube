@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: pn
+  name: pn
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pn
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pn
+    spec:
+      containers:
+      - image: kjanparvari/pn:1.0
+        name: pn
+        resources: {}
+        ports:
+          - containerPort: 5000
+        env:
+          - name: CC_DB_PASS
+            valueFrom:
+              secretKeyRef:
+                key: CC_DB_PASS
+                name: my-secret
+        envFrom:
+          - configMapRef:
+              name: pn-config
+#         livenessProbe:
+#           httpGet:
+#             port: 5000
+#             path: /healthz
+status: {}

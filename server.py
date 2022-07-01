@@ -38,7 +38,7 @@ def add_note():
 @app.route("/show", methods=['GET'])
 def get_note_page():
     note_id = request.args['note_id']
-    print(note_id)
+    logging.debug(note_id)
     return render_template("index2.html", note_id=note_id, server_port=server_port, server_address=server_address)
 
 
@@ -47,7 +47,7 @@ def get_note():
     note_id = request.args['note_id']
     r = connect_db()
     txt = r.get(note_id)
-    # r.delete(note_id)
+    r.delete(note_id)
     r.close()
     if txt is None:
         txt = "Note Does Not Exist!"
@@ -62,16 +62,20 @@ def connect_db():
     _conn = None
     try:
         # connect to the PostgreSQL server
-        print('Connecting to the Redis database...')
+        logging.debug('Connecting to the Redis database...')
         _r = redis.Redis(
             host=database_address,
             port=database_port,
             password=database_password)
         return _r
     except (Exception, redis.RedisError) as error:
-        print(error)
+        logging.debug(error)
 
 
 if __name__ == '__main__':
+    logging.debug(database_address)
     connect_db()
-    app.run(debug=True, host='0.0.0.0', port=server_port)
+    try:
+        app.run(debug=True, host='0.0.0.0', port=server_port)
+    except Exception as e:
+        logging.debug(e)
