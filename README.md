@@ -1,12 +1,11 @@
-# Private Note Web Application  
+# Private Note Minikube  
 
-A secure and scalable web application for managing private notes, built using Python Flask, Redis, Minikube, and Docker. This project demonstrates best practices in containerization and orchestration while maintaining a user-friendly experience.
+A private note web application developed using Python Flask, Redis, Minikube, and Docker. This project was created as part of the **Cloud Computing Course** to demonstrate the use of containerization and orchestration tools in application development.  
 
 ## Features  
-- **Secure Note Management**: Create, update, and delete private notes securely.  
-- **Scalable Architecture**: Designed for high availability using Minikube and Docker.  
-- **Redis Integration**: Leverages Redis for efficient caching and storage.  
-- **Containerized Environment**: Fully containerized using Docker for easy deployment and scaling.  
+- Secure note management with create, update, and delete functionalities.  
+- Scalable architecture using Minikube for Kubernetes orchestration.  
+- Efficient caching and storage with Redis.  
 
 ## Technology Stack  
 - **Backend**: Python Flask  
@@ -14,15 +13,14 @@ A secure and scalable web application for managing private notes, built using Py
 - **Containerization**: Docker  
 - **Orchestration**: Minikube  
 
-## Prerequisites  
-Ensure you have the following installed:  
-- [Docker](https://www.docker.com/)  
-- [Minikube](https://minikube.sigs.k8s.io/docs/start/)  
-- Python 3.8+  
-- Redis  
+## Purpose  
+This project highlights the practical application of cloud computing concepts, including:  
+- Containerization with Docker.  
+- Kubernetes orchestration with Minikube.  
+- Integration of caching solutions like Redis.  
 
-## Installation  
+## Acknowledgements  
+This project was completed as part of the **Cloud Computing Course**.  
 
-### Clone the Repository  
-```bash  
-git clone [https://github.com/your-username/private-note-app.git  ](https://github.com/kjanparvari/private-note-minikube.git)
+## License  
+This project is licensed under the Amirkabir University License. See the [LICENSE](LICENSE) file for details.  
