@@ -23,4 +23,4 @@ This project highlights the practical application of cloud computing concepts, i
 This project was completed as part of the **Cloud Computing Course**.  
 
 ## License  
-This project is licensed under the Amirkabir University License.  
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.  
