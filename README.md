@@ -25,5 +25,4 @@ Ensure you have the following installed:
 
 ### Clone the Repository  
 ```bash  
-git clone https://github.com/your-username/private-note-app.git  
-cd private-note-app  
+git clone [https://github.com/your-username/private-note-app.git  ](https://github.com/kjanparvari/private-note-minikube.git)
